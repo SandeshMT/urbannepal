@@ -1,0 +1,163 @@
+<?xml  version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+       xmlns:mvc="http://www.springframework.org/schema/mvc">
+ 
+   
+    
+    <bean id="dataSource"
+          class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/urbannepal" />
+        <property name="username" value="root" />
+        <property name="password" value="" />
+    </bean>
+ 
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        
+        <!--        this is instead of creating separate hibernate.cfg.xml-->
+        <property name="packagesToScan">
+            <list>
+                <!--             -This scans for entity class @Entity-->
+                <value>com.urbannepal.entity</value>
+           
+            </list>
+        </property>
+        <!-- This has been absolete in hibernate 4      
+             <property name="configurationClass">
+            <value>org.hibernate.cfg.AnnotationConfiguration</value>
+        </property>-->
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.current_session_context_class ">thread</prop>
+                <!--               <prop key="hibernate.hbm2ddl.auto">create</prop>-->
+                
+            </props>
+        </property>
+    </bean>
+    
+    
+    <!--<tx:annotation-driven transaction-manager="transactionManager" />-->
+
+    <!--         org.springframework.beans.factory.BeanCreationException has been fixed by talako code-->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    
+<!--    start of bean for Categories-->
+    <bean id="categoriesDao" class="com.urbannepal.dao.CategoriesDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+        
+    <bean id="categoriesService" class="com.urbannepal.service.CategoriesService">
+        <property name="catdao" ref="categoriesDao"/>
+    </bean>
+<!--    end of bean for Categories-->
+
+<!--    start of bean for Tags-->
+    <bean id="tagsDao" class="com.urbannepal.dao.TagsDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+        
+    <bean id="tagsService" class="com.urbannepal.service.TagsService">
+        <property name="tdao" ref="tagsDao"/>
+    </bean>
+<!--    end of bean for Tags-->
+
+<!--    start of bean for Media-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="1000000"></property>
+    </bean>
+    <bean id="mediaDao" class="com.urbannepal.dao.MediaDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+        
+    <bean id="mediaService" class="com.urbannepal.service.MediaService">
+        <property name="mdao" ref="mediaDao"/>
+    </bean>
+<!--    end of bean for Media-->
+
+<!--    start of bean for Contact-->
+    <bean id="contactDao" class="com.urbannepal.dao.ContactDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+        
+    <bean id="contactService" class="com.urbannepal.service.ContactService">
+        <property name="contdao" ref="contactDao"/>
+    </bean>
+<!--    end of bean for Contact-->
+
+<!--    start of bean for Users-->
+    <bean id="userDao" class="com.urbannepal.dao.UserDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+        
+    <bean id="userService" class="com.urbannepal.service.UserService">
+        <property name="udao" ref="userDao"/>
+    </bean>
+<!--    end of bean for Users-->
+
+<!--    start of bean for POSTs-->
+    <bean id="postDao" class="com.urbannepal.dao.PostDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+        
+    <bean id="postService" class="com.urbannepal.service.PostService">
+        <property name="postdao" ref="postDao"/>
+    </bean>
+<!--    end of bean for Posts-->
+
+<!--    start of bean for Login-->
+    <bean id="loginDao" class="com.urbannepal.dao.LoginDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+        
+    <bean id="loginService" class="com.urbannepal.service.LoginService">
+        <property name="logindao" ref="loginDao"/>
+    </bean>
+<!--    end of bean for Login-->
+
+<!--    start of bean for Email-->
+    <bean id="emailDao" class="com.urbannepal.dao.EmailDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+        
+    <bean id="emailService" class="com.urbannepal.service.EmailService">
+        <property name="emailDao" ref="emailDao"/>
+    </bean>
+<!--    end of bean for Email-->
+
+<!--    start of bean for Comments-->
+    <bean id="commentDao" class="com.urbannepal.dao.CommentDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+        
+    <bean id="cmtService" class="com.urbannepal.service.CommentService">
+        <property name="cmtDao" ref="commentDao"/>
+    </bean>
+<!--    end of bean for Comments-->
+
+<!--    start of bean for Service-->
+    <bean id="serviceDao" class="com.urbannepal.dao.ServiceDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+        
+    <bean id="srvService" class="com.urbannepal.service.ServiceService">
+        <property name="srvDao" ref="serviceDao"/>
+    </bean>
+<!--    end of bean for Service-->
+</beans>
